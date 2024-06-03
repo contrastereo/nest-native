@@ -1,0 +1,61 @@
+version: '3'
+services:
+  # expo:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.expo
+  #   ports:
+  #     - "19000:19000"
+  #     - "19001:19001"
+  #     - "19002:19002"
+  #     - "8081:8081"
+  #   volumes:
+  #     - ./app:/app
+  #     - /app/node_modules
+  #   command: npx expo start --tunnel
+  #   environment:
+  #     - CHOKIDAR_USEPOLLING=true
+  #     - EXPO_VAR=${EXPO_VAR}
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - app-network
+
+  nest:
+    build:
+      context: .
+      dockerfile: Dockerfile.nest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend:/backend
+      - /backend/node_modules
+    command: nodemon --watch src --exec ts-node src/main.ts
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - NEST_VAR=${NEST_VAR}
+    env_file:
+      - .env
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE_NAME}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:

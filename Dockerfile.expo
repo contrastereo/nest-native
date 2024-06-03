@@ -1,0 +1,23 @@
+# Usa una imagen base oficial de Node.js
+FROM node:18
+
+# Establece el directorio de trabajo en el contenedor
+WORKDIR /app
+
+# Copia el archivo package.json y package-lock.json al directorio de trabajo
+COPY app/package*.json ./
+
+# Instala las dependencias del proyecto, incluida la nueva CLI local de Expo
+RUN npm install
+
+# Copia todo el código de la aplicación al directorio de trabajo
+COPY app .
+
+# Expone los puertos en los que Expo se ejecutará
+EXPOSE 19000
+EXPOSE 19001
+EXPOSE 19002
+EXPOSE 8081
+
+# Comando para iniciar la aplicación
+CMD ["npx", "expo", "start", "--tunnel"]
