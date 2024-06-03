@@ -1,6 +1,6 @@
 import queryString from "query-string"
 
-export const API_URL = 'http://192.168.1.2:3000'
+export const API_URL = process.env.EXPO_PUBLIC_API_URL
 export class ApiFetch {
   async request(url: any, options:any) {
     const response = await fetch(url,options);
